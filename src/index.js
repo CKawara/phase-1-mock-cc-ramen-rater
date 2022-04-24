@@ -6,12 +6,11 @@ const form = document.getElementById("new-ramen")
 fetch("http://localhost:3000/ramens")
 .then(response => response.json())
 .then(data => {
-    console.log(data)
     data.forEach(item => {
-        loadMenu(item)
+        displayMenu(item)
     });
 })
-function loadMenu(item){
+function displayMenu(item){
     let img = document.createElement('img')
     img.src = item.image
     menu.appendChild(img)
@@ -24,4 +23,28 @@ function loadMenu(item){
         document.getElementById('comment-display').innerText = item.comment
     })
 }
+form.addEventListener('submit', (e)=>{
+    e.preventDefault()
+    let data = {
+        name: e.target.name.value,
+        restaurant: e.target.restaurant.value,
+        image: e.target.image.value,
+        rating: e.target.rating.value,
+        comment: e.target.new_comment.value
+    }
+    fetch("http://localhost:3000/ramens", {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => displayMenu(data))
+
+    form.reset()
+})
+
+
 
